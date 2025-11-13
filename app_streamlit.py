@@ -3,21 +3,21 @@ import pandas as pd
 import pickle
 from sklearn.metrics.pairwise import cosine_similarity
 
-# --- تحميل الموديل والفكتورايزر ---
+
 with open("agglomerative_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-# لو عندك توصيات محفوظة
+
 with open("recommendations.pkl", "rb") as f:
     recommendations = pickle.load(f)
 
-# --- واجهة Streamlit ---
+# ---Streamlit ---
 st.title("Medical Disease Predictor 🩺")
 
-# Text Area لإدخال الأعراض
+# Text Area 
 user_input = st.text_area("Enter your symptoms (separate by commas):")
 
 # زر Predict
@@ -40,17 +40,18 @@ if st.button("Predict"):
             "Similarity": similarity
         })
 
-        # ترتيب من الأعلى للأسفل
+      
         df = df.sort_values(by="Similarity", ascending=False)
 
-        # إضافة التوصيات
+      
         df['Recommendation'] = df['Disease'].apply(
             lambda x: recommendations.get(x, "No recommendation available"))
 
-        # عرض الجدول الكامل
+     
         st.subheader("Predicted Diseases with Similarity & Recommendations")
         st.dataframe(df)
 
-        # عرض أفضل 3 نتائج
-        st.subheader("Top 3 Possible Diseases")
+       
+        st.subheader("Top 4 Possible Diseases")
         st.table(df.head(5))
+
