@@ -95,9 +95,8 @@ def map_sections(sections: dict, condition_name: str):
         for category, keywords in keyword_map.items():
             if any(kw in title_lower for kw in keywords):
                 mapped[category].add(content_text)
-                break  # ما يدخلش على باقي الكاتيجوريات
+                break  
 
-    # ثانيًا: لو العنوان مش مصنف، نحاول نحلله من الكلام نفسه
     for title, content in sections.items():
         title_lower = title.lower()
         if not any(kw in title_lower for kws in keyword_map.values() for kw in kws):
@@ -140,7 +139,7 @@ def get_disease_details(disease):
             }
             return details
         except Exception as e:
-            print(f"⚠️ Attempt {attempt + 1} failed for {disease['name']}: {e}")
+            print(f" Attempt {attempt + 1} failed for {disease['name']}: {e}")
             time.sleep(3)
     return None
 
@@ -154,22 +153,22 @@ def scrape_and_store():
     for disease in diseases:
         try:
             if conditions_col.find_one({"condition": disease["name"]}):
-                print(f"⚠️ Already exists: {disease['name']}")
+                print(f" Already exists: {disease['name']}")
                 skipped += 1
                 continue
 
             details = get_disease_details(disease)
             if details:
                 conditions_col.insert_one(details)
-                print(f"✅ Inserted: {details['condition']}")
+                print(f" Inserted: {details['condition']}")
                 inserted += 1
             else:
-                print(f"❌ Skipped (failed): {disease['name']}")
+                print(f" Skipped (failed): {disease['name']}")
                 failed += 1
 
             time.sleep(1.5)
         except Exception as e:
-            print(f"❌ Error with {disease['name']}: {e}")
+            print(f" Error with {disease['name']}: {e}")
             failed += 1
 
     return jsonify({
@@ -190,7 +189,7 @@ def count_documents():
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({
-        "message": "Welcome to NHS Scraper API 🚀",
+        "message": "Welcome to NHS Scraper API ",
         "endpoints": {
             "/scrape": "Scrape NHS and store structured data in MongoDB",
             "/count": "Show number of stored conditions"
@@ -200,3 +199,4 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
