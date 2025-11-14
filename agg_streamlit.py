@@ -7,14 +7,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Load the saved clustering model and vectorizer safely
 # ------------------------------------------------------
 try:
-    with open("agglomerative_model.pkl", "rb") as f:
+    with open("agg_model.pkl", "rb") as f:
         model = pickle.load(f)
 except Exception as e:
     st.error(f"Failed to load agglomerative_model.pkl: {e}")
     st.stop()
 
 try:
-    with open("vectorizer.pkl", "rb") as f:
+    with open("tfidf_vectorizer.pkl", "rb") as f:
         vectorizer = pickle.load(f)
 except Exception as e:
     st.error(f"Failed to load vectorizer.pkl: {e}")
@@ -31,7 +31,7 @@ except:
 # ------------------------------------------------------
 # Streamlit User Interface
 # ------------------------------------------------------
-st.title("Medical Disease Predictor 🩺")
+st.title("MediMine Application 🩺")
 
 # Input box for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
@@ -105,3 +105,4 @@ if st.button("Predict"):
     # ------------------------------------------------------
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
