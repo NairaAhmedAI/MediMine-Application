@@ -1,71 +1,110 @@
-import pickle
-from datetime import datetime
-import numpy as np
+import streamlit as st
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import AgglomerativeClustering
+import pickle
 from sklearn.metrics.pairwise import cosine_similarity
-from pymongo import MongoClient
-import gridfs
 
-# --- Step 1: Connect to MongoDB ---
-client = MongoClient("mongodb://localhost:27017/")
-db = client["NHS_DB"]
-conditions_col = db["conditions"]
-fs = gridfs.GridFS(db)
-models_meta = db["models_meta1"]
+# ------------------------------------------------------
+# Load the saved clustering model and vectorizer safely
+# ------------------------------------------------------
+try:
+    with open("agglomerative_model.pkl", "rb") as f:
+        model = pickle.load(f)
+except Exception as e:
+    st.error(f"Failed to load agglomerative_model.pkl: {e}")
+    st.stop()
 
-# --- Step 2: Load data from MongoDB ---
-data = list(conditions_col.find({}))
-df = pd.DataFrame(data)
+try:
+    with open("vectorizer.pkl", "rb") as f:
+        vectorizer = pickle.load(f)
+except Exception as e:
+    st.error(f"Failed to load vectorizer.pkl: {e}")
+    st.stop()
 
-# --- Step 3: TF-IDF features ---
-tfidf_vectorizer_agg = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
-X_agg = tfidf_vectorizer_agg.fit_transform(df["condition"]).toarray()
+# Load recommendations file
+try:
+    with open("recommendations.pkl", "rb") as f:
+        recommendations = pickle.load(f)
+except:
+    recommendations = {}
+    st.warning("Warning: recommendations.pkl not found.")
 
-# --- Step 4: Agglomerative Clustering ---
-n_clusters_agg = 60
-agg_model = AgglomerativeClustering(
-    n_clusters=n_clusters_agg,
-    metric="cosine",
-    linkage="average"
-)
-df["agg_cluster"] = agg_model.fit_predict(X_agg)
+# ------------------------------------------------------
+# Streamlit User Interface
+# ------------------------------------------------------
+st.title("MediMine Aapplication🩺")
 
-# --- Step 5: Simple evaluation metric ---
-# cluster (intra-cluster similarity)
+# Input box for symptoms
+user_input = st.text_area("Enter your symptoms (separate by commas):")
+
+# ------------------------------------------------------
+# When user clicks Predict button
+# ------------------------------------------------------
+if st.button("Predict"):
+
+    if user_input.strip() == "":
+        st.warning("Please enter your symptoms first!")
+        st.stop()
+
+    # Convert patient symptoms to TF-IDF
+    user_vec = vectorizer.transform([user_input])
+
+    # ------------------------------------------------------
+    # FIX: Handle disease_symptoms from the model safely
+    # ------------------------------------------------------
+    disease_symptoms = model.get("disease_symptoms", [])
+
+    # If disease_symptoms is a single string → convert to list
+    if isinstance(disease_symptoms, str):
+        disease_symptoms = [disease_symptoms]
+
+    # If it's a dictionary → take values
+    elif isinstance(disease_symptoms, dict):
+        disease_symptoms = list(disease_symptoms.values())
+
+    # If it's numpy array / tuple / other → convert to list
+    elif not isinstance(disease_symptoms, list):
+        try:
+            disease_symptoms = list(disease_symptoms)
+        except:
+            st.error("Error: 'disease_symptoms' is in an unsupported format.")
+            st.stop()
+
+    # Convert all entries to strings to avoid TF-IDF errors
+    disease_symptoms = [str(s) for s in disease_symptoms]
+
+    # Now transform safely
+    disease_vecs = vectorizer.transform(disease_symptoms)
+
+    # ------------------------------------------------------
+    # Calculate similarity
+    # ------------------------------------------------------
+    similarity = cosine_similarity(user_vec, disease_vecs)[0]
+
+    # Create output DataFrame
+    df = pd.DataFrame({
+        "Disease": model.get("diseases", []),
+        "Similarity": similarity
+    })
+
+    # Sort diseases by similarity score
+    df = df.sort_values(by="Similarity", ascending=False)
+
+    # Add recommendations for each disease
+    df["Recommendation"] = df["Disease"].apply(
+        lambda d: recommendations.get(d, "No recommendation available")
+    )
+
+    # ------------------------------------------------------
+    # Display full result table
+    # ------------------------------------------------------
+    st.subheader("Predicted Diseases with Similarity Scores & Recommendations")
+    st.dataframe(df)
+
+    # ------------------------------------------------------
+    # Show Top 5 predictions
+    # ------------------------------------------------------
+    st.subheader("Top 5 Most Likely Diseases")
+    st.table(df.head(5))
 
 
-def cluster_cohesion(X, labels):
-    scores = []
-    for cluster_id in np.unique(labels):
-        cluster_points = X[labels == cluster_id]
-        if len(cluster_points) > 1:
-            sims = cosine_similarity(cluster_points)
-            upper = np.triu_indices_from(sims, k=1)
-            scores.append(sims[upper].mean())
-    return np.mean(scores) if scores else 0.0
 
-
-cohesion = cluster_cohesion(X_agg, df["agg_cluster"].values)
-
-print(f"✅ Agglomerative model trained | Cohesion score: {cohesion:.3f}")
-
-# --- Step 6: Save model + vectorizer to GridFS ---
-model_binary = pickle.dumps({
-    "vectorizer": tfidf_vectorizer_agg,
-    "clustering": agg_model
-})
-model_id = fs.put(model_binary, filename="agg_clustering.pkl")
-
-# --- Step 7: Save metadata ---
-models_meta.insert_one({
-    "name": "agg_clustering_v1",
-    "type": "AgglomerativeClustering",
-    "gridfs_id": model_id,
-    "labels": df["condition"].unique().tolist(),
-    "metrics": {"cohesion": round(float(cohesion), 3)},
-    "created": datetime.utcnow()
-})
-
-print("✅ Model + metadata saved to MongoDB")
