@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import pickle
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.cluster import AgglomerativeClustering
 
 # -----------------------------
 # Load TF-IDF vectorizer
@@ -13,9 +12,16 @@ try:
 except Exception as e:
     st.error(f"Failed to load vectorizer.pkl: {e}")
     st.stop()
-with open("agg_model.pkl", "rb") as f:
-    agg_model = pickle.load(f)
-df["agg_cluster"] = agg_model.labels_  # استخدام الـ labels المحفوظة
+
+# -----------------------------
+# Load pre-trained Agglomerative Clustering model
+# -----------------------------
+try:
+    with open("agg_model.pkl", "rb") as f:
+        agg_model = pickle.load(f)
+except Exception as e:
+    st.error(f"Failed to load agg_model.pkl: {e}")
+    st.stop()
 
 # -----------------------------
 # Load Disease DataFrame from pickle
@@ -35,12 +41,10 @@ diseases = df["condition"].astype(str).tolist()
 recommendations_dict = dict(zip(df["condition"], df["recommendations"].astype(str)))
 
 # -----------------------------
-# Agglomerative Clustering
+# Use pre-trained clustering labels
 # -----------------------------
-n_clusters_agg = 60
-agg_model = AgglomerativeClustering(n_clusters=n_clusters_agg, metric="cosine", linkage="average")
 X_agg = tfidf_vectorizer_agg.transform(disease_symptoms).toarray()
-df["agg_cluster"] = agg_model.fit_predict(X_agg)
+df["agg_cluster"] = agg_model.labels_  # use pre-trained cluster labels
 
 # -----------------------------
 # Function to find similar diseases
@@ -99,3 +103,4 @@ if st.button("Predict"):
             st.dataframe(results_agg_df)
             st.subheader("Top 5 Most Likely Diseases")
             st.table(results_agg_df.head(5))
+
