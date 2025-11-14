@@ -17,7 +17,7 @@ except Exception as e:
 # Load the vectorizer
 # -----------------------------
 try:
-    with open("tfidf_vectorizer.pkl", "rb") as f:
+    with open("tfiidf_vectorizer.pkl", "rb") as f:
         vectorizer = pickle.load(f)
 except Exception as e:
     st.error(f"Failed to load vectorizer.pkl: {e}")
@@ -36,7 +36,7 @@ except:
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("MediMine Application 🩺")
+st.title("Medical Disease Predictor 🩺")
 
 # User input for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
@@ -54,32 +54,41 @@ if st.button("Predict"):
     user_vec = vectorizer.transform([user_input])
 
     # -----------------------------
-    # Handle disease symptoms and diseases from the model
+    # Handle disease symptoms and diseases from the model safely
     # -----------------------------
     # Try dict access first
     try:
-        disease_symptoms = model.get("disease_symptoms", [])
-        diseases = model.get("diseases", [])
+        disease_symptoms = model.get("disease_symptoms", None)
+        diseases = model.get("diseases", None)
     except AttributeError:
         # If model is object, try attribute access
-        disease_symptoms = getattr(model, "disease_symptoms", [])
-        diseases = getattr(model, "diseases", [])
+        disease_symptoms = getattr(model, "disease_symptoms", None)
+        diseases = getattr(model, "diseases", None)
 
-    # Ensure disease_symptoms is a list of strings
-    if isinstance(disease_symptoms, str):
-        disease_symptoms = [disease_symptoms]
-    elif isinstance(disease_symptoms, dict):
-        disease_symptoms = list(disease_symptoms.values())
-    elif not isinstance(disease_symptoms, list):
+    # -----------------------------
+    # FIX: Ensure disease_symptoms is a valid list of strings
+    # -----------------------------
+    if disease_symptoms is None:
+        st.error("Error: disease_symptoms not found in the model.")
+        st.stop()
+
+    # Convert to list if it's not already
+    if not isinstance(disease_symptoms, list):
         try:
             disease_symptoms = list(disease_symptoms)
-        except:
-            st.error("Error: disease_symptoms format not supported.")
+        except Exception as e:
+            st.error(f"Error: disease_symptoms cannot be converted to list. Details: {e}")
             st.stop()
 
-    disease_symptoms = [str(s) for s in disease_symptoms]
+    # Remove None or empty strings and strip spaces
+    disease_symptoms = [str(s).strip() for s in disease_symptoms if s is not None and str(s).strip() != ""]
 
-    # Transform disease symptoms using TF-IDF
+    # Stop if the list is empty
+    if len(disease_symptoms) == 0:
+        st.error("Error: disease_symptoms is empty after cleaning. Cannot transform.")
+        st.stop()
+
+    # Now safe to transform with the TF-IDF vectorizer
     disease_vecs = vectorizer.transform(disease_symptoms)
 
     # -----------------------------
@@ -112,4 +121,3 @@ if st.button("Predict"):
     # -----------------------------
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
-
