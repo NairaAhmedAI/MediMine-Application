@@ -10,23 +10,23 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 
 - **Data Acquisition**: Web scraping from NHS Inform A-Z conditions
 - **Multiple Models**: 
-  - Clustering analysis (by [Naira Ahmed])
-  - BiLSTM neural network (by [])
-  - BioBERT transformer model (by [])
+  - Clustering analysis 
+  - BiLSTM neural network 
+  - BioBERT transformer model 
 - **RESTful API**: Flask-based endpoints for scraping and predictions
 - **MongoDB Integration**: For data storage and model management
 
 ## Models Implemented
 **Clustering Model**
-Implemented by: Naira Ahmed
+*Implemented by: Naira Ahmed*
 Approach: Agglomerative Clustering for symptom pattern discovery
 
 **BiLSTM Model**
-Implemented by: Teammate 1
+*Implemented by: Teammate 1*
 Architecture: Bidirectional LSTM for symptom classification
 
 **BioBERT Model**
-Implemented by: Teammate 2
+*Implemented by: Teammate 2*
 Fine-tuned BioBERT for medical text classification
 
 ## Prerequisites
