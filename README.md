@@ -5,7 +5,9 @@ Check out the **live Streamlit demo** here: [MediMine Application 🩺](https://
 ## Project Overview
 AI-powered system for predicting the most likely diseases and generating personalized recommendations using text similarity & embeddings.
 This system scrapes medical data from NHS Inform, processes it using various ML models (Clustering, BiLSTM, BioBERT), and provides diagnosis predictions through a Flask API.
-![App UI](assets/Screenshot 2025-11-14 180838.png)
+![image]![Uploading Screenshot 2025-11-14 180838.png…]()
+
+
 
 
 ## Features
