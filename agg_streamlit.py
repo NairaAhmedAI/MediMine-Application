@@ -27,7 +27,7 @@ except:
 # Load Disease DataFrame
 # -----------------------------
 try:
-    Disease_df = pd.read_csv("Disease_df.csv")  # أو pickle لو مخزن pickle
+    Disease_df = pd.read_csv("disease_df.csv") 
 except Exception as e:
     st.error(f"Failed to load Disease_df: {e}")
     st.stop()
@@ -83,3 +83,4 @@ if st.button("Predict"):
     # Display top 5 predictions
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
