@@ -6,7 +6,7 @@ Check out the **live Streamlit demo** here: [MediMine Application 🩺](https://
 AI-powered system for predicting the most likely diseases and generating personalized recommendations using text similarity & embeddings.
 This system scrapes medical data from NHS Inform, processes it using various ML models (Clustering, BiLSTM, BioBERT), and provides diagnosis predictions through a Flask API.
 
-## 🚀 Features
+## Features
 
 - **Data Acquisition**: Web scraping from NHS Inform A-Z conditions
 - **Multiple Models**: 
@@ -16,7 +16,7 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **RESTful API**: Flask-based endpoints for scraping and predictions
 - **MongoDB Integration**: For data storage and model management
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.8+
 - MongoDB
