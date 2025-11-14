@@ -101,6 +101,7 @@ if st.button("Predict"):
         else:
             st.subheader("Predicted Diseases with Similarity & Recommendations")
             st.dataframe(results_agg_df)
-            st.subheader("Top 5 Most Likely Diseases")
-            st.table(results_agg_df.head(5))
+            
+           
+
 
