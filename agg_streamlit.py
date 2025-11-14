@@ -105,8 +105,6 @@ if st.button("Predict"):
 
             for _, row in results_agg_df.iterrows():
                 with st.expander(f"{row['rank']}. {row['condition']} — Details"):
-                    st.markdown("### 📝 Output Text")
-                    st.write(row["output_text"])
-
                     st.markdown("### 💊 Recommendation")
                     st.write(row["Recommendation"])
+
