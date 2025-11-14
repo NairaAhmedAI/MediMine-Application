@@ -16,6 +16,19 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **RESTful API**: Flask-based endpoints for scraping and predictions
 - **MongoDB Integration**: For data storage and model management
 
+## Models Implemented
+**Clustering Model**
+Implemented by: Naira Ahmed
+Approach: Agglomerative Clustering for symptom pattern discovery
+
+**BiLSTM Model**
+Implemented by: Teammate 1
+Architecture: Bidirectional LSTM for symptom classification
+
+**BioBERT Model**
+Implemented by: Teammate 2
+Fine-tuned BioBERT for medical text classification
+
 ## Prerequisites
 
 - Python 3.8+
