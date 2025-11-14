@@ -4,17 +4,7 @@ import pickle
 from sklearn.metrics.pairwise import cosine_similarity
 
 # -----------------------------
-# Load the saved model safely
-# -----------------------------
-try:
-    with open("agg_model.pkl", "rb") as f:
-        model = pickle.load(f)
-except Exception as e:
-    st.error(f"Failed to load agglomerative_model.pkl: {e}")
-    st.stop()
-
-# -----------------------------
-# Load the vectorizer
+# Load TF-IDF vectorizer
 # -----------------------------
 try:
     with open("tfidf_vectorizer.pkl", "rb") as f:
@@ -34,9 +24,22 @@ except:
     st.warning("Recommendations file not found. Proceeding without it.")
 
 # -----------------------------
+# Load Disease DataFrame
+# -----------------------------
+try:
+    Disease_df = pd.read_csv("Disease_df.csv")  # أو pickle لو مخزن pickle
+except Exception as e:
+    st.error(f"Failed to load Disease_df: {e}")
+    st.stop()
+
+# Convert to lists
+disease_symptoms = Disease_df["Symptoms"].astype(str).tolist()
+diseases = Disease_df["Disease"].astype(str).tolist()
+
+# -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("Medical Disease Predictor 🩺")
+st.title("MediMine Application🩺")
 
 # User input for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
@@ -53,47 +56,10 @@ if st.button("Predict"):
     # Convert user symptoms to TF-IDF
     user_vec = vectorizer.transform([user_input])
 
-    # -----------------------------
-    # Handle disease symptoms and diseases from the model safely
-    # -----------------------------
-    # Try dict access first
-    try:
-        disease_symptoms = model.get("disease_symptoms", None)
-        diseases = model.get("diseases", None)
-    except AttributeError:
-        # If model is object, try attribute access
-        disease_symptoms = getattr(model, "disease_symptoms", None)
-        diseases = getattr(model, "diseases", None)
-
-    # -----------------------------
-    # FIX: Ensure disease_symptoms is a valid list of strings
-    # -----------------------------
-    if disease_symptoms is None:
-        st.error("Error: disease_symptoms not found in the model.")
-        st.stop()
-
-    # Convert to list if it's not already
-    if not isinstance(disease_symptoms, list):
-        try:
-            disease_symptoms = list(disease_symptoms)
-        except Exception as e:
-            st.error(f"Error: disease_symptoms cannot be converted to list. Details: {e}")
-            st.stop()
-
-    # Remove None or empty strings and strip spaces
-    disease_symptoms = [str(s).strip() for s in disease_symptoms if s is not None and str(s).strip() != ""]
-
-    # Stop if the list is empty
-    if len(disease_symptoms) == 0:
-        st.error("Error: disease_symptoms is empty after cleaning. Cannot transform.")
-        st.stop()
-
-    # Now safe to transform with the TF-IDF vectorizer
+    # Transform disease symptoms
     disease_vecs = vectorizer.transform(disease_symptoms)
 
-    # -----------------------------
     # Compute cosine similarity
-    # -----------------------------
     similarity = cosine_similarity(user_vec, disease_vecs)[0]
 
     # Create a DataFrame with results
@@ -110,15 +76,10 @@ if st.button("Predict"):
         lambda d: recommendations.get(d, "No recommendation available")
     )
 
-    # -----------------------------
     # Display full table
-    # -----------------------------
     st.subheader("Predicted Diseases with Similarity & Recommendations")
     st.dataframe(df)
 
-    # -----------------------------
     # Display top 5 predictions
-    # -----------------------------
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
-
