@@ -24,12 +24,13 @@ except:
     st.warning("Recommendations file not found. Proceeding without it.")
 
 # -----------------------------
-# Load Disease DataFrame
+# Load Disease DataFrame from pickle
 # -----------------------------
 try:
-    Disease_df = pd.read_csv("diseases_df.csv") 
+    with open("diseases_df.pkl", "rb") as f:
+        Disease_df = pickle.load(f)
 except Exception as e:
-    st.error(f"Failed to load Disease_df: {e}")
+    st.error(f"Failed to load Disease_df.pkl: {e}")
     st.stop()
 
 # Convert to lists
@@ -39,7 +40,7 @@ diseases = Disease_df["Disease"].astype(str).tolist()
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("MediMine Application🩺")
+st.title("MediMine Application 🩺")
 
 # User input for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
