@@ -14,16 +14,6 @@ except Exception as e:
     st.stop()
 
 # -----------------------------
-# Load recommendations (optional)
-# -----------------------------
-try:
-    with open("recommendations.pkl", "rb") as f:
-        recommendations = pickle.load(f)
-except:
-    recommendations = {}
-    st.warning("Recommendations file not found. Proceeding without it.")
-
-# -----------------------------
 # Load Disease DataFrame from pickle
 # -----------------------------
 try:
@@ -34,13 +24,16 @@ except Exception as e:
     st.stop()
 
 # Convert to lists
-disease_symptoms = Disease_df["Symptoms"].astype(str).tolist()
-diseases = Disease_df["Disease"].astype(str).tolist()
+disease_symptoms = Disease_df["symptoms"].apply(lambda x: str(x)).tolist()
+diseases = Disease_df["condition"].astype(str).tolist()
+
+# Use recommendations from DataFrame if exists
+recommendations_dict = dict(zip(Disease_df["condition"], Disease_df["recommendations"].astype(str)))
 
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("MediMine Application 🩺")
+st.title("MediMine Application🩺")
 
 # User input for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
@@ -65,16 +58,16 @@ if st.button("Predict"):
 
     # Create a DataFrame with results
     df = pd.DataFrame({
-        "Disease":condition,
+        "Disease": diseases,
         "Similarity": similarity
     })
 
     # Sort by similarity descending
     df = df.sort_values(by="Similarity", ascending=False)
 
-    # Add recommendations if available
+    # Add recommendations
     df["Recommendation"] = df["Disease"].apply(
-        lambda d: recommendations.get(d, "No recommendation available")
+        lambda d: recommendations_dict.get(d, "No recommendation available")
     )
 
     # Display full table
@@ -84,6 +77,8 @@ if st.button("Predict"):
     # Display top 5 predictions
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
+
 
 
 
