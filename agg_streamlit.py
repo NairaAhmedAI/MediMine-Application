@@ -2,83 +2,100 @@ import streamlit as st
 import pandas as pd
 import pickle
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import AgglomerativeClustering
 
 # -----------------------------
 # Load TF-IDF vectorizer
 # -----------------------------
 try:
     with open("tfidf_vectorizer.pkl", "rb") as f:
-        vectorizer = pickle.load(f)
+        tfidf_vectorizer_agg = pickle.load(f)
 except Exception as e:
     st.error(f"Failed to load vectorizer.pkl: {e}")
     st.stop()
+with open("agg_model.pkl", "rb") as f:
+    agg_model = pickle.load(f)
+df["agg_cluster"] = agg_model.labels_  # استخدام الـ labels المحفوظة
 
 # -----------------------------
 # Load Disease DataFrame from pickle
 # -----------------------------
 try:
     with open("diseases_df.pkl", "rb") as f:
-        Disease_df = pickle.load(f)
+        df = pickle.load(f)
 except Exception as e:
-    st.error(f"Failed to load Disease_df.pkl: {e}")
+    st.error(f"Failed to load diseases_df.pkl: {e}")
     st.stop()
 
 # Convert to lists
-disease_symptoms = Disease_df["symptoms"].apply(lambda x: str(x)).tolist()
-diseases = Disease_df["condition"].astype(str).tolist()
+disease_symptoms = df["symptoms"].apply(lambda x: str(x)).tolist()
+diseases = df["condition"].astype(str).tolist()
 
-# Use recommendations from DataFrame if exists
-recommendations_dict = dict(zip(Disease_df["condition"], Disease_df["recommendations"].astype(str)))
+# Use recommendations from DataFrame
+recommendations_dict = dict(zip(df["condition"], df["recommendations"].astype(str)))
+
+# -----------------------------
+# Agglomerative Clustering
+# -----------------------------
+n_clusters_agg = 60
+agg_model = AgglomerativeClustering(n_clusters=n_clusters_agg, metric="cosine", linkage="average")
+X_agg = tfidf_vectorizer_agg.transform(disease_symptoms).toarray()
+df["agg_cluster"] = agg_model.fit_predict(X_agg)
+
+# -----------------------------
+# Function to find similar diseases
+# -----------------------------
+def find_similar_disease_agg(query_text, top_k=5, threshold=0.3):
+    query_vec_agg = tfidf_vectorizer_agg.transform([query_text]).toarray()
+
+    # Find nearest cluster
+    sims_clusters = cosine_similarity(query_vec_agg, X_agg).flatten()
+    best_index = sims_clusters.argmax()
+    cluster_id = df.iloc[best_index]["agg_cluster"]
+
+    # Filter by cluster
+    cluster_df = df[df["agg_cluster"] == cluster_id].copy()
+    cluster_X = X_agg[df["agg_cluster"] == cluster_id]
+
+    sims = cosine_similarity(query_vec_agg, cluster_X).flatten()
+    top_indices = sims.argsort()[::-1][:top_k]
+
+    results = cluster_df.iloc[top_indices][["condition", "output_text"]].copy()
+    results["agg_similarity"] = sims[top_indices]
+
+    # Filter by threshold
+    results = results[results["agg_similarity"] >= threshold]
+
+    # Add rank
+    results = results.sort_values(by="agg_similarity", ascending=False).reset_index(drop=True)
+    results.insert(0, "rank", results.index + 1)
+
+    # Add recommendations
+    results["Recommendation"] = results["condition"].apply(
+        lambda d: recommendations_dict.get(d, "No recommendation available")
+    )
+
+    return results
 
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("MediMine Application🩺")
+st.title("MediMine Application 🩺")
 
-# User input for symptoms
-user_input = st.text_area("Enter your symptoms (separate by commas):")
+query_text = st.text_area("Enter your symptoms (separate by commas):")
 
-# -----------------------------
-# Predict button
-# -----------------------------
+top_k = st.slider("Number of top results to display", min_value=1, max_value=10, value=5)
+threshold = st.slider("Similarity threshold", min_value=0.0, max_value=1.0, value=0.3)
+
 if st.button("Predict"):
-
-    if user_input.strip() == "":
+    if query_text.strip() == "":
         st.warning("Please enter your symptoms first!")
-        st.stop()
-
-    # Convert user symptoms to TF-IDF
-    user_vec = vectorizer.transform([user_input])
-
-    # Transform disease symptoms
-    disease_vecs = vectorizer.transform(disease_symptoms)
-
-    # Compute cosine similarity
-    similarity = cosine_similarity(user_vec, disease_vecs)[0]
-
-    # Create a DataFrame with results
-    df = pd.DataFrame({
-        "Disease": diseases,
-        "Similarity": similarity
-    })
-
-    # Sort by similarity descending
-    df = df.sort_values(by="Similarity", ascending=False)
-
-    # Add recommendations
-    df["Recommendation"] = df["Disease"].apply(
-        lambda d: recommendations_dict.get(d, "No recommendation available")
-    )
-
-    # Display full table
-    st.subheader("Predicted Diseases with Similarity & Recommendations")
-    st.dataframe(df)
-
-    # Display top 5 predictions
-    st.subheader("Top 5 Most Likely Diseases")
-    st.table(df.head(5))
-
-
-
-
-
+    else:
+        results_agg_df = find_similar_disease_agg(query_text, top_k=top_k, threshold=threshold)
+        if results_agg_df.empty:
+            st.info("No diseases found above the threshold.")
+        else:
+            st.subheader("Predicted Diseases with Similarity & Recommendations")
+            st.dataframe(results_agg_df)
+            st.subheader("Top 5 Most Likely Diseases")
+            st.table(results_agg_df.head(5))
