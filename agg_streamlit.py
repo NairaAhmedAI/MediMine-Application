@@ -17,7 +17,7 @@ except Exception as e:
 # Load the vectorizer
 # -----------------------------
 try:
-    with open("tfiidf_vectorizer.pkl", "rb") as f:
+    with open("tfidf_vectorizer.pkl", "rb") as f:
         vectorizer = pickle.load(f)
 except Exception as e:
     st.error(f"Failed to load vectorizer.pkl: {e}")
@@ -121,3 +121,4 @@ if st.button("Predict"):
     # -----------------------------
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
