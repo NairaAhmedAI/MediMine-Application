@@ -65,7 +65,7 @@ if st.button("Predict"):
 
     # Create a DataFrame with results
     df = pd.DataFrame({
-        "Disease": diseases,
+        "Disease":condition,
         "Similarity": similarity
     })
 
@@ -84,5 +84,6 @@ if st.button("Predict"):
     # Display top 5 predictions
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
 
 
