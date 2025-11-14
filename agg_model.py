@@ -31,7 +31,7 @@ except:
 # ------------------------------------------------------
 # Streamlit User Interface
 # ------------------------------------------------------
-st.title("Medical Disease Predictor 🩺")
+st.title("MediMine Aapplication🩺")
 
 # Input box for symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
@@ -105,5 +105,6 @@ if st.button("Predict"):
     # ------------------------------------------------------
     st.subheader("Top 5 Most Likely Diseases")
     st.table(df.head(5))
+
 
 
