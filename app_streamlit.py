@@ -3,54 +3,94 @@ import pandas as pd
 import pickle
 from sklearn.metrics.pairwise import cosine_similarity
 
-# --- تحميل الموديل والفكتورايزر ---
+# -----------------------------
+# Load the saved model and vectorizer
+# -----------------------------
 with open("agglomerative_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-# لو عندك توصيات محفوظة
+# Load saved recommendations
 with open("recommendations.pkl", "rb") as f:
     recommendations = pickle.load(f)
 
-# --- واجهة Streamlit ---
+# -----------------------------
+# Streamlit Interface
+# -----------------------------
 st.title("Medical Disease Predictor 🩺")
 
-# Text Area لإدخال الأعراض
+# Text input for user symptoms
 user_input = st.text_area("Enter your symptoms (separate by commas):")
 
-# زر Predict
+# -----------------------------
+# Predict button
+# -----------------------------
 if st.button("Predict"):
+
     if user_input.strip() == "":
         st.warning("Please enter your symptoms first!")
+
     else:
-        # تحويل الأعراض لتمثيل TF-IDF
+        # Convert patient symptoms to TF-IDF
         user_vec = vectorizer.transform([user_input])
 
-        # مصفوفة أعراض الأمراض من الموديل
-        disease_vecs = vectorizer.transform(model['disease_symptoms'])
+        # -----------------------------
+        # Handle disease symptoms safely
+        # This fixes the TypeError on Streamlit Cloud
+        # -----------------------------
+        disease_symptoms = model.get("disease_symptoms", [])
 
-        # حساب التشابه
+        # If symptoms is a single string → convert to list
+        if isinstance(disease_symptoms, str):
+            disease_symptoms = [disease_symptoms]
+
+        # If symptoms are in a dictionary → use values
+        elif isinstance(disease_symptoms, dict):
+            disease_symptoms = list(disease_symptoms.values())
+
+        # If not a list → convert to list (e.g. numpy array)
+        elif not isinstance(disease_symptoms, list):
+            try:
+                disease_symptoms = list(disease_symptoms)
+            except:
+                st.error("Error: disease symptoms are not in a valid format.")
+                st.stop()
+
+        # Ensure every symptom is a string
+        disease_symptoms = [str(s) for s in disease_symptoms]
+
+        # Transform disease symptoms using TF-IDF
+        disease_vecs = vectorizer.transform(disease_symptoms)
+
+        # -----------------------------
+        # Compute cosine similarity
+        # -----------------------------
         similarity = cosine_similarity(user_vec, disease_vecs)[0]
 
-        # إنشاء DataFrame للنتائج
+        # Create DataFrame with results
         df = pd.DataFrame({
-            "Disease": model['diseases'],
+            "Disease": model["diseases"],
             "Similarity": similarity
         })
 
-        # ترتيب من الأعلى للأسفل
+        # Sort diseases by similarity (highest first)
         df = df.sort_values(by="Similarity", ascending=False)
 
-        # إضافة التوصيات
-        df['Recommendation'] = df['Disease'].apply(
-            lambda x: recommendations.get(x, "No recommendation available"))
+        # Add medical recommendations
+        df["Recommendation"] = df["Disease"].apply(
+            lambda d: recommendations.get(d, "No recommendation available")
+        )
 
-        # عرض الجدول الكامل
+        # -----------------------------
+        # Display full prediction table
+        # -----------------------------
         st.subheader("Predicted Diseases with Similarity & Recommendations")
         st.dataframe(df)
 
-        # عرض أفضل 3 نتائج
-        st.subheader("Top 3 Possible Diseases")
+        # -----------------------------
+        # Display Top 5
+        # -----------------------------
+        st.subheader("Top 5 Possible Diseases")
         st.table(df.head(5))
