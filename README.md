@@ -1,6 +1,6 @@
 #  MediMine🩺 — AI-Powered Medical Diagnosis System
 
-Check out the **live Streamlit demo** here: [MediMine Application 🩺]([https://e5zt7dvjjxiioxe2sbutcu.streamlit.app/](https://medimine-application-bg7bcw2ukmizfkejnaxhxg.streamlit.app/]) 
+Check out the **live Streamlit demo** here: [MediMine Application 🩺][https://e5zt7dvjjxiioxe2sbutcu.streamlit.app/](https://medimine-application-bg7bcw2ukmizfkejnaxhxg.streamlit.app/]
 
 ## Project Overview
 AI-powered system for predicting the most likely diseases and generating personalized recommendations using text similarity & embeddings.
