@@ -1,0 +1,86 @@
+import streamlit as st
+import random
+
+st.set_page_config(page_title="MediMind Application", page_icon="🩺", layout="centered")
+
+st.markdown("""
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a0dad, #1e3a8a);
+            color: white;
+        }
+        .main {
+            color: white;
+        }
+        .stTextInput>div>div>input {
+            color: black !important;
+        }
+        .stButton>button {
+            background-color: white;
+            color: black;
+            border-radius: 8px;
+            padding: 0.6em 1.2em;
+            font-weight: bold;
+        }
+        .stButton>button:hover {
+            background-color: #e6e6e6;
+        }
+        .card {
+            background-color: #ede9fe;
+            padding: 16px;
+            border-radius: 12px;
+            color: black;
+            font-size: 16px;
+            margin-top: 20px;
+            box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+        }
+        .info-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .emoji {
+            font-size: 20px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("🩺 MediMind Application")
+st.subheader("""
+Please describe your symptoms clearly for an accurate medical recommendation.
+
+✏️ What are your symptoms?
+""")
+
+symptom = st.text_input("")
+
+if st.button("Diagnose", use_container_width=True):
+    if symptom:
+        results = {
+            "Warnings": random.choice([
+                "Could indicate dehydration or low blood pressure.",
+                "Might be due to inner ear issues or migraine.",
+                "Possibly related to stress or anxiety."
+            ]),
+            "Causes": random.choice([
+                "Linked to viral ear infections or blood pressure drops.",
+                "Often caused by stress, fatigue, or anxiety.",
+                "Sometimes due to blood sugar imbalance or dehydration."
+            ]),
+            "Recommendation": random.choice([
+                "Rest, hydrate, and consult a doctor if persistent.",
+                "Monitor symptoms and seek medical advice if worsening.",
+                "Avoid sudden movements and maintain regular meals."
+            ])
+        }
+
+        st.markdown(f"""
+        <div class="card">
+            <div class="info-line"><span class="emoji">⚠️</span> <b>Warnings:</b> {results["Warnings"]}</div>
+            <div class="info-line"><span class="emoji">🧠</span> <b>Causes:</b> {results["Causes"]}</div>
+            <div class="info-line"><span class="emoji">💡</span> <b>Recommendation:</b> {results["Recommendation"]}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.warning("Please enter your symptoms before diagnosis.")
