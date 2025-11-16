@@ -14,7 +14,8 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **Multiple Models**: 
   - Clustering analysis 
   - BiLSTM neural network 
-  - BioBERT transformer model 
+  - BioBERT transformer model
+  - BERT transformer model
 - **RESTful API**: Flask-based endpoints for scraping and predictions
 - **MongoDB Integration**: For data storage and model management
 
