@@ -25,13 +25,13 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - Approach: Agglomerative Clustering for symptom pattern discovery
 
 **BiLSTM Model**
-- **Implemented by: Teammate 1**
+- **Implemented by: Yassmen abdelaziz**
 - Architecture: Bidirectional LSTM for symptom classification
 
 **BioBERT Model**
-- **Implemented by: Teammate 2**
+- **Implemented by: Basma Sameh**
 - Fine-tuned BioBERT for medical text classification
-
+- Fine-tuned BERT for medical text classification
 ## Prerequisites
 
 - Python 3.8+
