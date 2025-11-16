@@ -29,7 +29,7 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **Implemented by: Yassmen abdelaziz**
 - Architecture: Bidirectional LSTM for symptom classification
 
-**BioBERT and BERT Models**
+**BioBERT and BERT Models (Transformers)**
 - **Implemented by: Basma Sameh**
 - Fine-tuned BioBERT for medical text classification
 - Fine-tuned BERT for medical text classification
