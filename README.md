@@ -22,15 +22,15 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 ## Models Implemented
 
 **Clustering Model**
-- **Implemented by: Naira Ahmed**
+- **Implemented by: [Naira Ahmed](https://github.com/NairaAhmedAI)**
 - Approach: Agglomerative Clustering for symptom pattern discovery
 
 **BiLSTM Model**
-- **Implemented by: Yassmen abdelaziz**
+- **Implemented by: [Yassmen abdelaziz](https://github.com/yasmenelqady)**
 - Architecture: Bidirectional LSTM for symptom classification
 
 **BioBERT and BERT Models (Transformers)**
-- **Implemented by: Basma Sameh**
+- **Implemented by: [Basma Sameh](https://github.com/basmasameh84)**
 - Fine-tuned BioBERT for medical text classification
 - Fine-tuned BERT for medical text classification
 
