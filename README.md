@@ -114,3 +114,44 @@ Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
   - Improves performance for ML ,DNN and BERT/BioBERT models.
   - Preserves learning from incomplete records by merging available symptoms and causes.
 
+# 🗂️ Agglomerative Clustering Model (Medical Conditions)
+
+## Overview
+ The model groups medical conditions into clusters based on textual similarity.
+ Uses **TF-IDF vectorization** of condition names and **Agglomerative Clustering**.
+ Stored in **MongoDB with GridFS** along with metadata for easy retrieval via API.
+
+## Key Steps
+
+1. Data Loading:  
+ - Fetch conditions from MongoDB (`conditions` collection).
+ - Convert to DataFrame for processing.
+
+2. Feature Extraction
+ - TF-IDF vectorization (`max_features=5000`, ngram_range=(1,2)) of condition names.
+
+3. Agglomerative Clustering
+ - Clusters: `n_clusters=60`
+ - Metric: cosine similarity, linkage: average.
+ - Assigns each condition to a cluster (`agg_cluster`).
+
+4. Evaluation
+ - Calculates **intra-cluster cohesion** using cosine similarity.
+ - Provides a simple metric to estimate cluster quality.
+
+5. Model & Metadata Storage
+ - Model + TF-IDF vectorizer serialized with `pickle` and saved to **GridFS**.
+ - Metadata stored in `models_meta1` collection:
+ - Name, type, labels, cohesion score, creation timestamp.
+
+6. API Usage
+ - The Flask API loads this model from MongoDB/GridFS.
+ - Provides endpoints to:
+     - Retrieve clusters for a given condition.
+     - Serve as a backend for Streamlit recommendations interface.
+
+7. Result
+  - Enables **text-based grouping of medical conditions**.
+  - Supports **recommendation and similarity** search in medical applications.
+  - Ready to integrate with Streamlit or other ML/AI interfaces.
+
