@@ -43,11 +43,13 @@ and convert it into structured, machine-readable records stored in MongoDB.
 
 1. Entry Point — A–Z Index
 -The scraper begins at the official NHS A–Z index page and extracts all condition names and their URLs.
+
 2. Content Extraction
--For each condition page, the scraper systematically collects:
- - Section headings (<h2>)
-   -Paragraphs (<p>)
-   -Bullet lists (<ul><li>)
+  -For each condition page, the scraper systematically collects:
+  -Section headings (<h2>)
+  -Paragraphs (<p>)
+  -Bullet lists (<ul><li>)
+   
 3. Intelligent Section Mapping
 A custom keyword-driven mapping engine categorizes extracted content into:
  -Symptoms
@@ -56,15 +58,12 @@ A custom keyword-driven mapping engine categorizes extracted content into:
  -Warnings / Emergency 
  -Recommendations 
 This ensures consistent structuring even when individual NHS pages differ in layout.
-4. Data Cleaning & Consolidation
-The pipeline performs:
-Duplicate sentence removal
-Merging semantically related chunks
-HTML noise removal
-Normalization and text standardization
+
 5. MongoDB Insertion
 Each processed condition is stored as a structured document:
+
 ```
+
  {
   "condition": "Asthma",
   "symptoms": "...",
@@ -73,6 +72,7 @@ Each processed condition is stored as a structured document:
   "warnings": "...",
   "recommendations": "..."
 }
+
  ```
 
 
