@@ -56,7 +56,7 @@ and convert it into structured, machine-readable records stored in MongoDB.
     - Diagnosis.
     - Warnings / Emergency .
     - Recommendations .
-This ensures consistent structuring even when individual NHS pages differ in layout.
+  This ensures consistent structuring even when individual NHS pages differ in layout.
 
 6. MongoDB Insertion:
  - Each processed condition is stored as a structured document:
