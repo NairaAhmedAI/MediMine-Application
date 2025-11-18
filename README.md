@@ -90,20 +90,20 @@ This module prepares scraped medical data for ML and Transformer models using ` 
    - Merges entities + tokens into a single clean string.
 
 3. Apply Processing to All Text Fields
- - Fields processed: symptoms, causes, diagnosis, warnings, recommendations.
+ - Fields processed: `symptoms`, `causes`, `diagnosis`, `warnings`, `recommendations `.
  - Ensures uniform cleaning and normalization for ML models.
 
 4. Build Model Input/Output Pairs
- - Input (input_text): combination of `symptoms` + `causes`.
+ - Input (`input_text`): combination of `symptoms` + `causes`.
  - Handles missing values (some diseases lack symptoms, others lack causes).
  - Merging ensures all records contribute to model learning.
- - Output (output_text): structured text combining:
+ - Output (`output_text`): structured text combining:
    
  ```python   
 Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
 
  ```
- - This format is suitable for classification, seq2seq, or Transformer models.
+ - This format is suitable for `clustering`, `seq2seq`, or `Transformer` models.
 
 5. Save Advanced Processed Dataset
 - `diseases_advanced_processed.json` → cleaned medical fields.
