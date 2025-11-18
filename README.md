@@ -40,16 +40,16 @@ The system includes an automated web-scraping pipeline designed to collect medic
 and convert it into structured, machine-readable records stored in MongoDB.
 
 ## 🔍 Scraping Process Overview
-1. Entry Point — A–Z Index
+1. Entry Point — A–Z Index:
 - The scraper begins at the official NHS A–Z index page and extracts all condition names and their URLs.
 
-3. Content Extraction
-   For each condition page, the scraper systematically collects:
+3. Content Extraction:
+- For each condition page, the scraper systematically collects:
      - Section headings `(<h2>)`.
      - Paragraphs `(<p>)`.
      - Bullet lists `(<ul><li>)`.
    
-4. Intelligent Section Mapping
+4. Intelligent Section Mapping:
  - A custom keyword-driven mapping engine categorizes extracted content into:
     - Symptoms.
     - Causes.
@@ -58,9 +58,8 @@ and convert it into structured, machine-readable records stored in MongoDB.
     - Recommendations .
 This ensures consistent structuring even when individual NHS pages differ in layout.
 
-6. MongoDB Insertion
+6. MongoDB Insertion:
  - Each processed condition is stored as a structured document:
-
 ```python
 
  {
