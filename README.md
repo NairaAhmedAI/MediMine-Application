@@ -54,7 +54,7 @@ and convert it into structured, machine-readable records stored in MongoDB.
     - Symptoms.
     - Causes.
     - Diagnosis.
-    - Warnings / Emergency .
+    - Warnings .
     - Recommendations .
    * This ensures consistent structuring even when individual NHS pages differ in layout.
 
