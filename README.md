@@ -33,23 +33,26 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **Implemented by: Basma Sameh**
 - Fine-tuned BioBERT for medical text classification
 - Fine-tuned BERT for medical text classification
-  
-> # 🧹 Data Scraping Pipeline — NHS Inform A–Z Scraper
+
+# 🧹 Data Scraping Pipeline — NHS Inform A–Z Scraper
 
 The system includes an automated web-scraping pipeline designed to collect medical content from [NHS Inform (A–Z condition](https://www.nhsinform.scot/)
 and convert it into structured, machine-readable records stored in MongoDB.
 
 ## 🔍 Scraping Process Overview
 1. Entry Point — A–Z Index
+   
 -The scraper begins at the official NHS A–Z index page and extracts all condition names and their URLs.
 
-2. Content Extraction
-  -For each condition page, the scraper systematically collects:
+3. Content Extraction
+   
+   For each condition page, the scraper systematically collects:
      -Section headings `(<h2>)`.
      -Paragraphs `(<p>)`.
      -Bullet lists `(<ul><li>)`.
    
-3. Intelligent Section Mapping
+4. Intelligent Section Mapping
+   
 -A custom keyword-driven mapping engine categorizes extracted content into:
     -Symptoms.
     -Causes.
@@ -58,7 +61,8 @@ and convert it into structured, machine-readable records stored in MongoDB.
     -Recommendations .
 This ensures consistent structuring even when individual NHS pages differ in layout.
 
-5. MongoDB Insertion
+6. MongoDB Insertion
+   
 Each processed condition is stored as a structured document:
 
 ```python
