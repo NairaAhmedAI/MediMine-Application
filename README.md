@@ -21,12 +21,13 @@ Check out the **live Streamlit demo** here: [MediMine Application 🩺](https://
 - [Medical Text Classification using BERT & BioBERT](#medical-text-classification-using-bert--biobert-with-mongodb-integration)
 - [Conclusion](#conclusion)
 
+***
 ## Project Overview
-AI-powered system for predicting the most likely diseases and generating personalized recommendations using text similarity & embeddings.
-This system scrapes medical data from NHS Inform, processes it using various ML models (Clustering, BiLSTM, BioBERT), and provides diagnosis predictions through a Flask API.
+AI-powered system for predicting the most likely diseases and generating personalized recommendations using **text similarity & embeddings**.
+This system scrapes medical data from **NHS Inform**, processes it using various ML models **(Clustering, BiLSTM, BioBERT)**, and provides diagnosis predictions through a **Flask API**.
 
 <img width="1738" height="1018" alt="image" src="https://github.com/user-attachments/assets/7cd0c978-7862-4240-b8d6-e35e7fc0cf12" />
-
+***
 # ⚠️ Important Challenge
  ## Dataset Limitation — Unique Labels Problem
  
@@ -51,7 +52,7 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
      - Near **one-shot generalization**.
      - Independence from class frequency.
 - Still may produce **noisy outputs** due to extremely small fine-tuning data
-  
+  ***
 ## Features
 
 - **Data Acquisition**: Web scraping from NHS Inform A-Z conditions
@@ -77,7 +78,7 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - **Implemented by: [Basma Sameh](https://github.com/basmasameh84)**
 - Fine-tuned BioBERT for medical text classification
 - Fine-tuned BERT for medical text classification
-
+***
 # 🧹 Data Scraping Pipeline — NHS Inform A–Z Scraper
 
 The system includes an automated web-scraping pipeline designed to collect medical content from [NHS Inform (A–Z condition](https://www.nhsinform.scot/)
@@ -117,6 +118,7 @@ and convert it into structured, machine-readable records stored in MongoDB.
 }
 
  ```
+***
 # 🧬 Advanced Medical Text Preprocessing & Input/Output Construction
 This module prepares scraped medical data for ML and Transformer models using ` SciSpacy ` and structured input/output creation.
 
@@ -158,7 +160,7 @@ Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
   - Dataset is noise-free, medical-aware, and ready for training.
   - Improves performance for ML ,DNN and BERT/BioBERT models.
   - Preserves learning from incomplete records by merging available symptoms and causes.
-
+***
 # 🗂️ Agglomerative Clustering Model (Medical Conditions)
 
 ## Overview
@@ -199,7 +201,7 @@ Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
   - Enables **text-based grouping of medical conditions**.
   - Supports **recommendation and similarity** search in medical applications.
   - Ready to integrate with Streamlit or other ML/AI interfaces.
-
+***
 # 🌡️ BiLSTM Medical Condition Classification API
 
 This Flask API provides training and inference endpoints for a **BiLSTM-based multi-class medical condition classifier**.
@@ -215,7 +217,7 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 - **Top-1 / Top-3 accuracy + Micro-F**1 as evaluation metrics.
 - **Fully functional** ّ/predictّ`**endpoint** for real-time predictions.
   
-## 📌 Main Components
+##  Main Components
 ### 1. MongoDB Integration
 
 - Reads medical data from `conditions` collection.
@@ -254,7 +256,8 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 2. `/predict`→ loads model → tokenizes text
 3. Model outputs probability distribution
 4. API returns Top-3 conditions + probabilities
-
+   
+***
 # 🚑 Medical Text Classification using BERT & BioBERT with MongoDB Integration
 
 ## Overview
@@ -296,10 +299,10 @@ Two transformer-based models were fine-tuned:
 
 ### Deployment Prep
 
-Saved tokenizer + model in `saved_model/`
-Exported as `.zip` for easy deployment with FastAPI / Streamlit / SnowFlask.
+- Saved tokenizer + model in `saved_model/`
+- Exported as `.zip` for easy deployment with FastAPI / Streamlit / SnowFlask.
 
-
+***
 # Conclusion
 
 **MediMine🩺** demonstrates how AI can assist in medical diagnosis even with extremely sparse data. Traditional models struggled, but **BERT/BioBERT transformers** handled one-shot learning effectively. The project combines **data scraping, advanced preprocessing**, **multiple AI models**, and a **deployable API**, providing a complete pipeline from raw medical data to actionable predictions.
