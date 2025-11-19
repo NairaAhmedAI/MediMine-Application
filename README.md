@@ -22,12 +22,15 @@ Check out the **live Streamlit demo** here: [MediMine Application 🩺](https://
 - [Conclusion](#conclusion)
 
 ***
+
 ## Project Overview
 AI-powered system for predicting the most likely diseases and generating personalized recommendations using **text similarity & embeddings**.
 This system scrapes medical data from **NHS Inform**, processes it using various ML models **(Clustering, BiLSTM, BioBERT)**, and provides diagnosis predictions through a **Flask API**.
 
 <img width="1738" height="1018" alt="image" src="https://github.com/user-attachments/assets/7cd0c978-7862-4240-b8d6-e35e7fc0cf12" />
+
 ***
+
 # ⚠️ Important Challenge
  ## Dataset Limitation — Unique Labels Problem
  
