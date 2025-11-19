@@ -2,6 +2,25 @@
 
 Check out the **live Streamlit demo** here: [MediMine Application 🩺](https://medimine-application-bg7bcw2ukmizfkejnaxhxg.streamlit.app/)
 
+## Table of Contents
+
+- [Live Demo](#live-demo)
+- [Project Overview](#project-overview)
+- [Important Challenge](#important-challenge)
+  - [Dataset Limitation — Unique Labels Problem](#dataset-limitation-—-unique-labels-problem)
+  - [Why Traditional Models Failed](#why-traditional-models-failed)
+  - [Clustering (Agglomerative) — Limited Use](#clustering-agglomerative-—-limited-use)
+  - [Why Transformers Were the Only Option](#why-transformers-were-the-only-option)
+- [Features](#features)
+- [Models Implemented](#models-implemented)
+- [Data Scraping Pipeline](#data-scraping-pipeline-—-nhs-inform-a–z-scraper)
+  - [Scraping Process Overview](#scraping-process-overview)
+- [Advanced Medical Text Preprocessing & Input/Output Construction](#advanced-medical-text-preprocessing--inputoutput-construction)
+- [Agglomerative Clustering Model](#agglomerative-clustering-model-medical-conditions)
+- [BiLSTM Medical Condition Classification API](#bilstm-medical-condition-classification-api)
+- [Medical Text Classification using BERT & BioBERT](#medical-text-classification-using-bert--biobert-with-mongodb-integration)
+- [Conclusion](#conclusion)
+
 ## Project Overview
 AI-powered system for predicting the most likely diseases and generating personalized recommendations using text similarity & embeddings.
 This system scrapes medical data from NHS Inform, processes it using various ML models (Clustering, BiLSTM, BioBERT), and provides diagnosis predictions through a Flask API.
@@ -14,14 +33,14 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 - The dataset has **445 diseases**, each appearing **once only** → zero repeated samples.
 - This creates a **445-class task with 1 sample per class**, making real learning impossible.
 
-## ❌ Why Traditional Models Failed
+##  Why Traditional Models Failed
 
 - **BiLSTM / CNN / RNN** cannot learn because:
      - No intra-class variance (1 sample per label).
      - No meaningful gradients → model collapses to random outputs.
      - These models require many samples per class, which do not exist.
 
-## ⚠️ Clustering (Agglomerative) — Limited Use
+##  Clustering (Agglomerative) — Limited Use
 
 - Works only on **semantic similarity**, not labels.
 - Results are **moderate**, limited by the dataset’s sparsity and imbalance.
@@ -64,7 +83,7 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 The system includes an automated web-scraping pipeline designed to collect medical content from [NHS Inform (A–Z condition](https://www.nhsinform.scot/)
 and convert it into structured, machine-readable records stored in MongoDB.
 
-## 🔍 Scraping Process Overview
+##  Scraping Process Overview
 
 ### 1. Entry Point — A–Z Index:
  - The scraper begins at the official NHS A–Z index page and extracts all condition names and their URLs.
@@ -236,7 +255,7 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 3. Model outputs probability distribution
 4. API returns Top-3 conditions + probabilities
 
-# Medical Text Classification using BERT & BioBERT with MongoDB Integration
+# 🚑 Medical Text Classification using BERT & BioBERT with MongoDB Integration
 
 ## Overview
 
@@ -279,3 +298,8 @@ Two transformer-based models were fine-tuned:
 
 Saved tokenizer + model in `saved_model/`
 Exported as `.zip` for easy deployment with FastAPI / Streamlit / SnowFlask.
+
+
+# Conclusion
+
+**MediMine🩺** demonstrates how AI can assist in medical diagnosis even with extremely sparse data. Traditional models struggled, but **BERT/BioBERT transformers** handled one-shot learning effectively. The project combines **data scraping, advanced preprocessing**, **multiple AI models**, and a **deployable API**, providing a complete pipeline from raw medical data to actionable predictions.
