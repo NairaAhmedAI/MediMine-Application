@@ -174,9 +174,9 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 ## 📌 Main Components
 ### 1. MongoDB Integration
 
-- Reads medical data from ّconditionsّ collection.
+- Reads medical data from `conditions` collection.
 - Stores trained models and tokenizers in **GridFS**.
-- Saves model version metadata in ّmodels_metaّ.
+- Saves model version metadata in `models_meta`.
 
 ### 2. Training Endpoint — /train
    
