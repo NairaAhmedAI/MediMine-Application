@@ -200,7 +200,7 @@ Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
   - Supports **recommendation and similarity** search in medical applications.
   - Ready to integrate with Streamlit or other ML/AI interfaces.
 
-# BiLSTM Medical Condition Classification API
+# 🌡️ BiLSTM Medical Condition Classification API
 
 This Flask API provides training and inference endpoints for a **BiLSTM-based multi-class medical condition classifier**.
 All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)** to enable versioning and dynamic deployment.
