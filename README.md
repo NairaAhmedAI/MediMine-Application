@@ -100,6 +100,7 @@ and convert it into structured, machine-readable records stored in MongoDB.
    
 ### 3. Intelligent Section Mapping:
   - A custom keyword-driven mapping engine categorizes extracted content into:
+    - **Condition**.
     - **Symptoms**.
     - **Causes**.
     - **Diagnosis**.
