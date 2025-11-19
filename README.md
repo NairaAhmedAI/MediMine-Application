@@ -231,7 +231,7 @@ Two transformer-based models were fine-tuned:
 ### 🔹 BERT-base (bert-base-uncased)
 
 - Tokenization with max length 512.
-- Label encoding for multi-class prediction.
+- Label encoding for **multi-class prediction**.
 - Fine-tuned using HuggingFace Trainer with mixed precision (FP16).
 - Evaluated using accuracy, precision, recall, F1-score.
 
