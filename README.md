@@ -149,10 +149,31 @@ Disease: ... | Recommendations: ... | Warnings: ... | Diagnosis: ...
  - The Flask API loads this model from MongoDB/GridFS.
  - Provides endpoints to:
      - Retrieve clusters for a given condition.
-     - Serve as a backend for Streamlit recommendations interface.
+     - Serve as a backend for `Streamlit` recommendations interface.
 
 ### 7. Result
   - Enables **text-based grouping of medical conditions**.
   - Supports **recommendation and similarity** search in medical applications.
   - Ready to integrate with Streamlit or other ML/AI interfaces.
+
+# BiLSTM Medical Condition Classification API
+
+This Flask API provides training and inference endpoints for a **BiLSTM-based multi-class medical condition classifier**.
+All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)** to enable versioning and dynamic deployment.
+
+## Key Features
+
+- **End-to-end ML pipeline** (training → evaluation → deployment).
+
+- **BiLSTM neural network** for medical text classification.
+
+- **MultiLabelBinarizer** for encoding condition labels.
+
+- **Tokenizer + padding** to prepare text inputs for the model.
+
+- **Model & tokenizer stored in GridFS**, enabling remote loading.
+
+- **Top-1 / Top-3 accuracy + Micro-F**1 as evaluation metrics.
+
+- **Fully functional ّ/predictّ endpoint** for real-time predictions.
 
