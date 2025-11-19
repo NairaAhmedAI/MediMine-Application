@@ -8,6 +8,31 @@ This system scrapes medical data from NHS Inform, processes it using various ML 
 
 <img width="1738" height="1018" alt="image" src="https://github.com/user-attachments/assets/7cd0c978-7862-4240-b8d6-e35e7fc0cf12" />
 
+# ⚠️ Important Challenge
+ ## Dataset Limitation — Unique Labels Problem
+ 
+- The dataset has **445 diseases**, each appearing **once only** → zero repeated samples.
+- This creates a **445-class task with 1 sample per class**, making real learning impossible.
+
+## ❌ Why Traditional Models Failed
+
+- **BiLSTM / CNN / RNN** cannot learn because:
+     - No intra-class variance (1 sample per label).
+     - No meaningful gradients → model collapses to random outputs.
+     - These models require many samples per class, which do not exist.
+
+## ⚠️ Clustering (Agglomerative) — Limited Use
+
+- Works only on **semantic similarity**, not labels.
+- Results are **moderate**, limited by the dataset’s sparsity and imbalance.
+
+## ✅ Why Transformers Were the Only Option
+
+- Models like **BERT / BioBERT** use **contextual embeddings**, enabling:
+     - Near **one-shot generalization**.
+     - Independence from class frequency.
+- Still may produce **noisy outputs** due to extremely small fine-tuning data
+  
 ## Features
 
 - **Data Acquisition**: Web scraping from NHS Inform A-Z conditions
