@@ -164,16 +164,50 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 ## Key Features
 
 - **End-to-end ML pipeline** (training → evaluation → deployment).
-
 - **BiLSTM neural network** for medical text classification.
-
 - **MultiLabelBinarizer** for encoding condition labels.
-
 - **Tokenizer + padding** to prepare text inputs for the model.
-
 - **Model & tokenizer stored in GridFS**, enabling remote loading.
-
 - **Top-1 / Top-3 accuracy + Micro-F**1 as evaluation metrics.
+- **Fully functional** ّ/predictّ`**endpoint** for real-time predictions.
+  
+## 📌 Main Components
+### 1. MongoDB Integration
 
-- **Fully functional ّ/predictّ endpoint** for real-time predictions.
+- Reads medical data from ّconditionsّ collection.
+- Stores trained models and tokenizers in **GridFS**.
+- Saves model version metadata in ّmodels_metaّ.
+
+### 2. Training Endpoint — /train
+   
+* This endpoint:
+- 1.  **Loads training data** (symptoms + warnings + recommendations).
+- 2.  **Preprocesses labels** using MultiLabelBinarizer.
+- 3.  **Splits data** (80% training, 20% testing).
+- 4. **Builds a BiLSTM model**:
+      - Embedding layer (128-dim)
+      - Bidirectional LSTM (128 units)
+      - Dropout for regularization
+      - Sigmoid output for multi-label classification
+- 5. **Trains with EarlyStopping**
+- 6. **Evaluates performance**:
+       - Top-1 accuracy
+       - Top-3 accuracy
+       - Micro-F1 score
+- 7. **Saves the model + tokenizer** to GridFS.
+- 8. Updates model metadata with version, labels & metrics.
+
+### 3. **Prediction Endpoint** — `/predict`
+
+- Loads the latest BiLSTM model and tokenizer from GridFS.
+- Processes incoming symptoms into padded sequences.
+- Generates probabilities for all diseases.
+- Returns **Top-3 predicted conditions** with confidence scores.
+
+### 4. **API Workflow Summary**
+
+1. **Client sends symptoms**
+2. `/predict`→ loads model → tokenizes text
+3. Model outputs probability distribution
+4. API returns Top-3 conditions + probabilities
 
