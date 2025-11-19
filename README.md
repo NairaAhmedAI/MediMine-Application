@@ -100,11 +100,11 @@ and convert it into structured, machine-readable records stored in MongoDB.
    
 ### 3. Intelligent Section Mapping:
   - A custom keyword-driven mapping engine categorizes extracted content into:
-    - Symptoms.
-    - Causes.
-    - Diagnosis.
-    - Warnings .
-    - Recommendations .
+    - **Symptoms**.
+    - **Causes**.
+    - **Diagnosis**.
+    - **Warnings**.
+    - **Recommendations** .
    * This ensures consistent structuring even when individual NHS pages differ in layout.
 
 ### 4. MongoDB Insertion:
