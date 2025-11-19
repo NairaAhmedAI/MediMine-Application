@@ -211,3 +211,46 @@ All models, tokenizers, and metadata are stored securely in  **MongoDB (GridFS)*
 3. Model outputs probability distribution
 4. API returns Top-3 conditions + probabilities
 
+# Medical Text Classification using BERT & BioBERT with MongoDB Integration
+
+## Overview
+
+This project builds a **medical text classification system** that predicts disease categories from clinical descriptions using **BERT-base** and **BioBERT** models.
+The dataset is cleaned, validated, stored, and retrieved from **MongoDB Atlas**, then used to fine-tune transformer models for multi-class medical classification.
+
+## Data Pipeline
+- Fixed corrupted JSON medical records using a custom brace-level parser.
+- Cleaned data: removed duplicates, handled missing text fields.
+- Uploaded structured medical conditions dataset to **MongoDB Cloud**.
+- Loaded dataset from MongoDB into Pandas for preprocessing.
+
+## Modeling
+
+Two transformer-based models were fine-tuned:
+
+### 🔹 BERT-base (bert-base-uncased)
+
+- Tokenization with max length 512.
+- Label encoding for multi-class prediction.
+- Fine-tuned using HuggingFace Trainer with mixed precision (FP16).
+- Evaluated using accuracy, precision, recall, F1-score.
+
+### 🔹 BioBERT (biobert-base-cased-v1.1)
+
+- Domain-specific biomedical language model.
+- Added **class-weighted loss** to fix class imbalance using CrossEntropyLoss with weighted classes.
+- Custom **WeightedTrainer** for loss computation.
+- Trained for **13 epochs with 1e-5 LR** for stability.
+
+### Results
+
+- Both models were evaluated on test and train sets.
+- Metrics reported:
+     - **Accuracy, Precision, Recall, F1-score**.
+- Training vs validation curves plotted.
+- Best checkpoints automatically saved.
+
+### Deployment Prep
+
+Saved tokenizer + model in `saved_model/`
+Exported as `.zip` for easy deployment with FastAPI / Streamlit / SnowFlask.
